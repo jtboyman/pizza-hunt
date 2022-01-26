@@ -36,7 +36,7 @@ const PizzaSchema = new Schema({
 
 //get total count of comments and replies on retrieval (virtuals allow us to add more information to a database response so that we don't have to add in the information manually with a helper before responding to the API request.)
 PizzaSchema.virtual('commentCount').get(function() {
-  return this.comments.length;
+  return this.comments.reduce((total, comment) => total + comment.replies.length + 1, 0);
 });
   // create the Pizza model using the PizzaSchema
 const Pizza = model('Pizza', PizzaSchema);

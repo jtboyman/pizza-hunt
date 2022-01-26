@@ -4,6 +4,12 @@ const pizzaController = {
   // get all pizzas
   getAllPizza(req, res) {
       Pizza.find({})
+      .populate({//make it so we can see the comments in the field (like when we joined tables in SQL)
+          path: 'comments', //value of the field to be populated
+          select: '-__v' // - __v to say we dont wanna see __v
+      })
+      .select('-__v')
+      .sort({_id: -1}) //sort in DESC order by _id value
       .then(dbPizzaData => res.json(dbPizzaData))
       .catch(err => {
           res.status(400).json(err);
@@ -13,6 +19,11 @@ const pizzaController = {
   //get one pizza by id
   getPizzaById({params}, res) { //destructure params out of the req object bc dont need anything else
       Pizza.findOne({_id: params.id})
+      .populate({
+          path: 'comments',
+          select: '-__v'
+      })
+      .select('-__v')
       .then(dbPizzaData => {
           //if no pizza found, send 404
           if (!dbPizzaData) {
